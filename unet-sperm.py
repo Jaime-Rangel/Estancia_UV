@@ -19,13 +19,13 @@ from skimage.io import imread
 from skimage.transform import resize
 import random
 
-input_dir = "/Users/jaime/Desktop/sperm_datasetv2/input_renames"
-target_dir = "/Users/jaime/Desktop/sperm_datasetv2/target_renames"
-img_size = (160, 160)
+input_dir = "/Users/jaime/Macbook IA Dropbox/jaime rangel/Universidad Veracruzana/Materias/Estancia/Clean_dataset/input_renames"
+target_dir = "/Users/jaime/Macbook IA Dropbox/jaime rangel/Universidad Veracruzana/Materias/Estancia/Clean_dataset/target_renames"
+img_size = (256, 256)
 num_classes = 1
 batch_size = 16
 
-val_samples = 900
+val_samples = 1000
 
 """
 ## Set aside a validation split
@@ -59,9 +59,7 @@ val_target_img_paths = target_img_paths[-val_samples:]
 
 # Split our img paths into a training and a validation set
 X_train = np.zeros((len(train_input_img_paths), img_size[0], img_size[1], 3), dtype=np.uint8)
-
 Y_train = np.zeros((len(train_input_img_paths), img_size[0], img_size[1], 1), dtype=np.bool_)
-
 X_test = np.zeros((len(val_input_img_paths), img_size[0], img_size[1], 3), dtype=np.uint8)
 
 for input_path, target_path in zip(input_img_paths[:10], target_img_paths[:10]):
@@ -117,22 +115,6 @@ def load_img_masks(input_img_path, target_img_path, test_img_path):
 
 
     return X_train, Y_train, X_test
-
-
-    # For faster debugging, limit the size of data
-    # if max_dataset_len:
-    #     input_img_paths = input_img_paths[:max_dataset_len]
-    #     target_img_paths = target_img_paths[:max_dataset_len]
-
-    # dataset = tf_data.Dataset.from_tensor_slices((input_img_paths, target_img_paths))
-    # dataset = dataset.map(load_img_masks, num_parallel_calls=tf_data.AUTOTUNE)
-
-    # #Just run
-    # [im1,im2] = load_img_masks(input_img_paths[0],target_img_paths[0])
-    # disp1 = np.asarray(im2)
-    # plt.imshow(disp1,cmap="gray", interpolation='nearest')
-
-    # return dataset.batch(batch_size)
 
 """
 ## Prepare U-Net Xception-style model
@@ -385,6 +367,5 @@ val_preds = model.predict(X_test)
 # Display mask predicted by our model
 display_mask(i)  # Note that the model only sees inputs at 150x150.
 
-model.save('./betamodel_v1.keras')  # The file needs to end with the .keras extension
-
-print()
+model.save('./betamodel_v2.keras')  # The file needs to end with the .keras extension
+plt.show()
