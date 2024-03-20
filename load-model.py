@@ -8,9 +8,10 @@ import numpy as np
 import os
 
 input_dir = "/Users/jaime/Macbook IA Dropbox/jaime rangel/Universidad Veracruzana/Materias/Estancia/Full_dataset/input/test"
-img_size = (256, 256)
+img_size = (160, 160)
 
-trained_model = keras.saving.load_model("./betamodel_v2.keras", custom_objects=None, compile=True, safe_mode=False)
+# trained_model = keras.saving.load_model("./betamodel_v4.keras", custom_objects=None, compile=True, safe_mode=False)
+trained_model = keras.saving.load_model("./sperms.keras", custom_objects=None, compile=True, safe_mode=False)
 
 input_img_paths = sorted(
     [
@@ -46,7 +47,7 @@ def display_mask(i):
     # showing image 
     plt.imshow(test_img,cmap='gray') 
     plt.axis('off') 
-    plt.title("Third")
+    plt.title("Predicted")
 
 X_test = load_img_masks(val_input_img_paths)
 
@@ -55,7 +56,7 @@ rows = 1
 columns = 2
 
 # Display results for validation image #0
-i = 13
+i = 3
 
 # create figure 
 fig = plt.figure(figsize=(10, 7))

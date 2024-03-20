@@ -16,16 +16,16 @@ from keras.layers import Input,Dropout, Lambda, Conv2D,Conv2DTranspose,MaxPoolin
 from keras.models import Model, load_model
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from skimage.io import imread
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from skimage.transform import resize
 import random
 
 input_dir = "/Users/jaime/Macbook IA Dropbox/jaime rangel/Universidad Veracruzana/Materias/Estancia/Clean_dataset/input_renames"
 target_dir = "/Users/jaime/Macbook IA Dropbox/jaime rangel/Universidad Veracruzana/Materias/Estancia/Clean_dataset/target_renames"
 img_size = (256, 256)
-num_classes = 1
 batch_size = 16
 
-val_samples = 1000
+val_samples = 1100
 
 """
 ## Set aside a validation split
@@ -47,6 +47,18 @@ target_img_paths = sorted(
     ]
 )
 
+# Define augmentation parameters
+train_datagen = ImageDataGenerator(
+    rotation_range=20,  # randomly rotate images in the range (degrees, 0 to 180)
+    width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
+    height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
+    shear_range=0.2,  # set range for random shear
+    zoom_range=0.2,  # set range for random zoom
+    horizontal_flip=True,  # randomly flip images horizontally
+    vertical_flip=False,  # randomly flip images vertically
+    fill_mode='nearest'  # fill mode for handling newly created pixels
+)
+
 print("Number of samples:", len(input_img_paths))
 
 random.Random(1337).shuffle(input_img_paths)
@@ -59,8 +71,9 @@ val_target_img_paths = target_img_paths[-val_samples:]
 
 # Split our img paths into a training and a validation set
 X_train = np.zeros((len(train_input_img_paths), img_size[0], img_size[1], 3), dtype=np.uint8)
-Y_train = np.zeros((len(train_input_img_paths), img_size[0], img_size[1], 1), dtype=np.bool_)
+Y_train = np.zeros((len(train_input_img_paths), img_size[0], img_size[1], 2), dtype=np.bool_)
 X_test = np.zeros((len(val_input_img_paths), img_size[0], img_size[1], 3), dtype=np.uint8)
+Y_test = np.zeros((len(val_target_img_paths), img_size[0], img_size[1], 2), dtype=np.bool_)
 
 for input_path, target_path in zip(input_img_paths[:10], target_img_paths[:10]):
     print(input_path, "|", target_path)
@@ -83,7 +96,8 @@ def get_dataset(
 ):
     """Returns a TF Dataset."""
 
-def load_img_masks(input_img_path, target_img_path, test_img_path):
+def load_img_masks(input_img_path, target_img_path, val_input_img_path,val_target_img_path):
+    
     for i, image_id in enumerate(input_img_path):            
         
         input_img = tf_io.read_file(image_id)
@@ -91,9 +105,6 @@ def load_img_masks(input_img_path, target_img_path, test_img_path):
         input_img = tf_image.resize(input_img, img_size)
         input_img = tf_image.convert_image_dtype(input_img, "float32")
         
-        # use np.expand dims to add a channel axis so the shape becomes (IMG_HEIGHT, IMG_WIDTH, 1)
-        
-        # insert the image into X_train
         X_train[i] = input_img
 
     for i, mask_id in enumerate(target_img_path):            
@@ -104,8 +115,7 @@ def load_img_masks(input_img_path, target_img_path, test_img_path):
 
         Y_train[i] = target_img
 
-    
-    for i, test_id in enumerate(test_img_path):    
+    for i, test_id in enumerate(val_input_img_path):    
         test_img = tf_io.read_file(test_id)
         test_img = tf_io.decode_png(test_img, channels=3)
         test_img = tf_image.resize(test_img, img_size)
@@ -113,187 +123,110 @@ def load_img_masks(input_img_path, target_img_path, test_img_path):
 
         X_test[i] = test_img
 
+    for i, mask_id in enumerate(val_target_img_path):            
+        target_img = tf_io.read_file(mask_id)
+        target_img = tf_io.decode_png(target_img, channels=1)
+        target_img = tf_image.resize(target_img, img_size, method="nearest")
+        target_img = tf_image.convert_image_dtype(target_img, "uint8")
 
-    return X_train, Y_train, X_test
+        Y_test[i] = target_img
+
+    return X_train, Y_train, X_test, Y_test
 
 """
 ## Prepare U-Net Xception-style model
 """
 
-def get_mode_v2():
-    inputs = Input((img_size[0], img_size[1], 3))
+def get_model():
 
+    inputs = Input((img_size[0], img_size[1], 3))
     s = Lambda(lambda x: x / 255) (inputs)
 
-    c1 = Conv2D(16, (3, 3), activation='elu', kernel_initializer='he_normal', padding='same') (s)
+    c1 = Conv2D(64, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same') (s)
     c1 = Dropout(0.1) (c1)
-    c1 = Conv2D(16, (3, 3), activation='elu', kernel_initializer='he_normal', padding='same') (c1)
+    c1 = Conv2D(64, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same') (c1)
     p1 = MaxPooling2D((2, 2)) (c1)
 
-    c2 = Conv2D(32, (3, 3), activation='elu', kernel_initializer='he_normal', padding='same') (p1)
+    c2 = Conv2D(128, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same') (p1)
     c2 = Dropout(0.1) (c2)
-    c2 = Conv2D(32, (3, 3), activation='elu', kernel_initializer='he_normal', padding='same') (c2)
+    c2 = Conv2D(128, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same') (c2)
     p2 = MaxPooling2D((2, 2)) (c2)
 
-    c3 = Conv2D(64, (3, 3), activation='elu', kernel_initializer='he_normal', padding='same') (p2)
+    c3 = Conv2D(256, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same') (p2)
     c3 = Dropout(0.2) (c3)
-    c3 = Conv2D(64, (3, 3), activation='elu', kernel_initializer='he_normal', padding='same') (c3)
+    c3 = Conv2D(256, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same') (c3)
     p3 = MaxPooling2D((2, 2)) (c3)
 
-    c4 = Conv2D(128, (3, 3), activation='elu', kernel_initializer='he_normal', padding='same') (p3)
+    c4 = Conv2D(512, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same') (p3)
     c4 = Dropout(0.2) (c4)
-    c4 = Conv2D(128, (3, 3), activation='elu', kernel_initializer='he_normal', padding='same') (c4)
+    c4 = Conv2D(512, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same') (c4)
     p4 = MaxPooling2D(pool_size=(2, 2)) (c4)
 
-    c5 = Conv2D(256, (3, 3), activation='elu', kernel_initializer='he_normal', padding='same') (p4)
+    c5 = Conv2D(1024, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same') (p4)
     c5 = Dropout(0.3) (c5)
-    c5 = Conv2D(256, (3, 3), activation='elu', kernel_initializer='he_normal', padding='same') (c5)
+    c5 = Conv2D(1024, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same') (c5)
 
-    u6 = Conv2DTranspose(128, (2, 2), strides=(2, 2), padding='same') (c5)
+    u6 = Conv2DTranspose(512, (2, 2), strides=(2, 2), padding='same') (c5)
     u6 = concatenate([u6, c4])
-    c6 = Conv2D(128, (3, 3), activation='elu', kernel_initializer='he_normal', padding='same') (u6)
+    c6 = Conv2D(512, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same') (u6)
     c6 = Dropout(0.2) (c6)
-    c6 = Conv2D(128, (3, 3), activation='elu', kernel_initializer='he_normal', padding='same') (c6)
+    c6 = Conv2D(512, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same') (c6)
 
-    u7 = Conv2DTranspose(64, (2, 2), strides=(2, 2), padding='same') (c6)
+    u7 = Conv2DTranspose(256, (2, 2), strides=(2, 2), padding='same') (c6)
     u7 = concatenate([u7, c3])
-    c7 = Conv2D(64, (3, 3), activation='elu', kernel_initializer='he_normal', padding='same') (u7)
+    c7 = Conv2D(256, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same') (u7)
     c7 = Dropout(0.2) (c7)
-    c7 = Conv2D(64, (3, 3), activation='elu', kernel_initializer='he_normal', padding='same') (c7)
+    c7 = Conv2D(256, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same') (c7)
 
-    u8 = Conv2DTranspose(32, (2, 2), strides=(2, 2), padding='same') (c7)
+    u8 = Conv2DTranspose(128, (2, 2), strides=(2, 2), padding='same') (c7)
     u8 = concatenate([u8, c2])
-    c8 = Conv2D(32, (3, 3), activation='elu', kernel_initializer='he_normal', padding='same') (u8)
+    c8 = Conv2D(128, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same') (u8)
     c8 = Dropout(0.1) (c8)
-    c8 = Conv2D(32, (3, 3), activation='elu', kernel_initializer='he_normal', padding='same') (c8)
+    c8 = Conv2D(128, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same') (c8)
 
-    u9 = Conv2DTranspose(16, (2, 2), strides=(2, 2), padding='same') (c8)
+    u9 = Conv2DTranspose(64, (2, 2), strides=(2, 2), padding='same') (c8)
     u9 = concatenate([u9, c1], axis=3)
-    c9 = Conv2D(16, (3, 3), activation='elu', kernel_initializer='he_normal', padding='same') (u9)
+    c9 = Conv2D(64, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same') (u9)
     c9 = Dropout(0.1) (c9)
-    c9 = Conv2D(16, (3, 3), activation='elu', kernel_initializer='he_normal', padding='same') (c9)
+    c9 = Conv2D(64, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same') (c9)
 
-    outputs = Conv2D(1, (1, 1), activation='sigmoid') (c9)
+    outputs = Conv2D(2, (1, 1), activation='sigmoid') (c9)
+
     return inputs,outputs
 
-def get_model(img_size, num_classes):
-    inputs = keras.Input(shape=img_size + (3,))
+[X_train, Y_train, X_test, Y_test] = load_img_masks(train_input_img_paths,train_target_img_paths,val_input_img_paths,val_target_img_paths)
 
-    ### [First half of the network: downsampling inputs] ###
+train_generator = train_datagen.flow(X_train, Y_train, batch_size=batch_size)
 
-    # Entry block
-    x = layers.Conv2D(32, 3, strides=2, padding="same")(inputs)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
-
-    previous_block_activation = x  # Set aside residual
-
-    # Blocks 1, 2, 3 are identical apart from the feature depth.
-    for filters in [64, 128, 256]:
-        x = layers.Activation("relu")(x)
-        x = layers.SeparableConv2D(filters, 3, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-
-        x = layers.Activation("relu")(x)
-        x = layers.SeparableConv2D(filters, 3, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-
-        x = layers.MaxPooling2D(3, strides=2, padding="same")(x)
-
-        # Project residual
-        residual = layers.Conv2D(filters, 1, strides=2, padding="same")(
-            previous_block_activation
-        )
-        x = layers.add([x, residual])  # Add back residual
-        previous_block_activation = x  # Set aside next residual
-
-    ### [Second half of the network: upsampling inputs] ###
-
-    for filters in [256, 128, 64, 32]:
-        x = layers.Activation("relu")(x)
-        x = layers.Conv2DTranspose(filters, 3, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-
-        x = layers.Activation("relu")(x)
-        x = layers.Conv2DTranspose(filters, 3, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-
-        x = layers.UpSampling2D(2)(x)
-
-        # Project residual
-        residual = layers.UpSampling2D(2)(previous_block_activation)
-        residual = layers.Conv2D(filters, 1, padding="same")(residual)
-        x = layers.add([x, residual])  # Add back residual
-        previous_block_activation = x  # Set aside next residual
-    
-    # Add a per-pixel classification layer
-    outputs = layers.Conv2D(num_classes, 3, activation="sigmoid", padding="same")(x)
-
-    # Define the model
-    model = keras.Model(inputs, outputs)
-    return model
-
-
-# Build model
-#model = get_model(img_size, num_classes)
-
-
-[X_train, Y_train, X_test] = load_img_masks(train_input_img_paths,train_target_img_paths,val_input_img_paths)
-
-# Instantiate dataset for each split
-# Limit input files in `max_dataset_len` for faster epoch training time.
-# Remove the `max_dataset_len` arg when running with full dataset.
-
-
-mmodel = get_mode_v2()
+mmodel = get_model()
 model = Model(inputs=[mmodel[0]], outputs=[mmodel[1]])
 
-model.compile(optimizer='adam', loss='binary_crossentropy')
-
+model.compile(optimizer=keras.optimizers.Adam(learning_rate=0.001), loss='binary_crossentropy')
 model.summary()
 
 """
 ## Train the model
 """
 
-# Configure the model for training.
-# We use the "sparse" version of categorical_crossentropy
-# because our target data is integers.
-# model.compile(
-#    optimizer=keras.optimizers.legacy.Adam(1e-4),
-#     loss="binary_crossentropy",  # Change the loss function
-#     metrics=["accuracy"],
-# )
-
 callbacks = [
     keras.callbacks.ModelCheckpoint("oxford_segmentation.keras", save_best_only=True)
 ]
 
 # Train the model, doing validation at the end of each epoch.
-epochs = 100
-
+epochs = 1
 filepath = "model.h5"
 
-earlystopper = EarlyStopping(patience=20, verbose=1)
+earlystopper = EarlyStopping(patience=15, verbose=1)
 
 checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, 
                              save_best_only=True, mode='min')
 
 callbacks_list = [earlystopper, checkpoint]
 
-# model.fit(
-#     train_dataset,
-#     epochs=epochs,
-#     validation_data=valid_dataset,
-#     callbacks=callbacks_list,
-#     verbose=1,
-# )
-
-# X_train = np.asarray(X_train).astype('float32').reshape((-1,1))
-# Y_train = np.asarray(Y_train).astype('uint8').reshape((-1,1))
-
 history = model.fit(X_train, Y_train, validation_split=0.1, batch_size=batch_size, epochs=epochs, 
                     callbacks=callbacks_list)
+
+#history = model.fit(train_generator, validation_data=(X_test, Y_test), epochs=epochs, callbacks=callbacks_list)
 
 """
 ## Visualize predictions
@@ -310,20 +243,14 @@ def display_mask(i):
     preds_test_thresh = (val_preds >= 0.5).astype(np.uint8)
     test_img = preds_test_thresh[i, :, :, 0]
 
-    #mask_pred = (val_preds[i] > 0.5).astype(np.uint8)  # Convertir a binario con un umbral de 0.5
-
-    # mask = np.expand_dims(mask_pred, axis=-1)
-    # mask = np.squeeze(mask, axis=(2, 3))
-    #mask = np.asarray(array_redimensionado)
-    #img = pilimageops.autocontrast(keras.utils.array_to_img(mask))
-
     # Adds a subplot at the 3rd position 
     fig.add_subplot(rows, columns, 3) 
     
     # showing image 
     plt.imshow(test_img,cmap='gray') 
     plt.axis('off') 
-    plt.title("Third")
+    plt.title("Predicted")
+    print()
 
 # setting values to rows and column variables 
 rows = 2
@@ -331,7 +258,7 @@ columns = 2
 
 # Display results for validation image #0
 
-i = 100
+i = 200
 
 # Display input image
 #display(Image(filename=val_input_img_paths[i]))
@@ -352,13 +279,13 @@ plt.title("Original")
 
 # Display ground-truth target mask
 #img = ImageOps.autocontrast(load_img(val_target_img_paths[i]))
-img = pilimageops.autocontrast(load_img(val_target_img_paths[i]))
+#img = pilimageops.autocontrast(load_img(val_target_img_paths[i]))
 
 # Adds a subplot at the 1st position 
 fig.add_subplot(rows, columns, 2) 
   
 # showing image 
-plt.imshow(img) 
+plt.imshow(Y_test[i, :, :, 0])
 plt.axis('off') 
 plt.title("Mask") 
 
@@ -367,5 +294,9 @@ val_preds = model.predict(X_test)
 # Display mask predicted by our model
 display_mask(i)  # Note that the model only sees inputs at 150x150.
 
-model.save('./betamodel_v2.keras')  # The file needs to end with the .keras extension
+model.save('./sperms_v2.keras')  # The file needs to end with the .keras extension
+
+plt.plot(history.history['acc'], label='train') 
+plt.plot(history.history['val_accuracy'], label='test') 
+plt.legend() 
 plt.show()
