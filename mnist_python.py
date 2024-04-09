@@ -58,8 +58,8 @@ images = x_train[indexes]
 labels = y_train[indexes]
 
 
-# plot the 25 mnist digits
-plt.figure(figsize=(5,5))
+# # plot the 25 mnist digits
+# plt.figure(figsize=(5,5))
 # for i in range(len(indexes)):
 #     plt.subplot(5, 5, i + 1)
 #     image = images[i]
@@ -80,7 +80,7 @@ labels = np.argmax(val_preds, axis=1)
 # plt.imshow(pred_img, cmap='gray')
 
 plt.title(' Prediction: ' + str(labels[num_index]))
-plt.imshow(x_test[num_index], cmap='gray')
+plt.imshow(y_test[num_index], cmap='gray')
 plt.grid(False)
 plt.axis('off')
 

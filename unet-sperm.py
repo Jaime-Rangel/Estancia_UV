@@ -22,10 +22,16 @@ import random
 
 input_dir = "/Users/jaime/Macbook IA Dropbox/jaime rangel/Universidad Veracruzana/Materias/Estancia/Clean_dataset/input_renames"
 target_dir = "/Users/jaime/Macbook IA Dropbox/jaime rangel/Universidad Veracruzana/Materias/Estancia/Clean_dataset/target_renames"
-img_size = (256, 256)
-batch_size = 16
 
-val_samples = 1100
+#Hyperparameters
+img_size = (256, 256)
+
+epochs = 100
+batch_size = 64
+val_samples = 900
+epoch_patience = 15
+model_learning_rate = 0.005
+validation_split = 0.3
 
 """
 ## Set aside a validation split
@@ -200,8 +206,9 @@ train_generator = train_datagen.flow(X_train, Y_train, batch_size=batch_size)
 
 mmodel = get_model()
 model = Model(inputs=[mmodel[0]], outputs=[mmodel[1]])
+custom_metrics_order = [ 'accuracy']
 
-model.compile(optimizer=keras.optimizers.Adam(learning_rate=0.001), loss='binary_crossentropy')
+model.compile(optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=model_learning_rate), loss='binary_crossentropy', metrics=custom_metrics_order)
 model.summary()
 
 """
@@ -213,20 +220,21 @@ callbacks = [
 ]
 
 # Train the model, doing validation at the end of each epoch.
-epochs = 1
 filepath = "model.h5"
 
-earlystopper = EarlyStopping(patience=15, verbose=1)
+earlystopper = EarlyStopping(patience=epoch_patience, verbose=1)
 
 checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, 
                              save_best_only=True, mode='min')
 
 callbacks_list = [earlystopper, checkpoint]
 
-history = model.fit(X_train, Y_train, validation_split=0.1, batch_size=batch_size, epochs=epochs, 
+history = model.fit(X_train, Y_train, validation_split=validation_split, batch_size=batch_size, epochs=epochs, 
                     callbacks=callbacks_list)
 
-#history = model.fit(train_generator, validation_data=(X_test, Y_test), epochs=epochs, callbacks=callbacks_list)
+# history = model.fit(X_train, Y_train, validation_split=validation_split, batch_size=batch_size, epochs=epochs)
+
+# history = model.fit(train_generator, validation_data=(X_test, Y_test), epochs=epochs, callbacks=callbacks_list)
 
 """
 ## Visualize predictions
@@ -253,7 +261,7 @@ def display_mask(i):
     print()
 
 # setting values to rows and column variables 
-rows = 2
+rows = 3
 columns = 2
 
 # Display results for validation image #0
@@ -285,7 +293,7 @@ plt.title("Original")
 fig.add_subplot(rows, columns, 2) 
   
 # showing image 
-plt.imshow(Y_test[i, :, :, 0])
+plt.imshow(Y_test[i, :, :, 0],cmap='gray')
 plt.axis('off') 
 plt.title("Mask") 
 
@@ -294,9 +302,16 @@ val_preds = model.predict(X_test)
 # Display mask predicted by our model
 display_mask(i)  # Note that the model only sees inputs at 150x150.
 
-model.save('./sperms_v2.keras')  # The file needs to end with the .keras extension
+model.save('./sperms_v5.keras')  # The file needs to end with the .keras extension
 
-plt.plot(history.history['acc'], label='train') 
+fig.add_subplot(rows, columns, 4) 
+plt.plot(history.history['accuracy'], label='train') 
 plt.plot(history.history['val_accuracy'], label='test') 
+plt.legend() 
+
+fig.add_subplot(rows, columns, 5) 
+plt.plot(history.history['loss'], label='train loss') 
+plt.plot(history.history['val_loss'], label='validation loss') 
+
 plt.legend() 
 plt.show()
