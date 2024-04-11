@@ -7,18 +7,18 @@ import keras
 import numpy as np
 import os
 
-final_dir = "mask_v3"
-input_dir = "/Users/jaime/Macbook IA Dropbox/jaime rangel/Universidad Veracruzana/Materias/Estancia/Full_dataset/input/test/sub"
-img_size = (256, 256)
+final_dir = "mask"
+input_dir = "spider_new"
+img_size = (512, 512)
 
 # trained_model = keras.saving.load_model("./betamodel_v4.keras", custom_objects=None, compile=True, safe_mode=False)
-trained_model = keras.saving.load_model("./sperms_v3.keras", custom_objects=None, compile=True, safe_mode=False)
+trained_model = load_model("./spiders_v2.keras", custom_objects=None, compile=True)
 
 input_img_paths = sorted(
     [
         os.path.join(input_dir, fname)
         for fname in os.listdir(input_dir)
-        if fname.endswith(".jpg")
+        if fname.endswith(".JPG")
     ]
 )
 val_input_img_paths = input_img_paths[:]

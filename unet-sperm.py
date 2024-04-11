@@ -19,19 +19,31 @@ from skimage.io import imread
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from skimage.transform import resize
 import random
+import tensorflow as tf
 
-input_dir = "/Users/jaime/Macbook IA Dropbox/jaime rangel/Universidad Veracruzana/Materias/Estancia/Clean_dataset/input_renames"
-target_dir = "/Users/jaime/Macbook IA Dropbox/jaime rangel/Universidad Veracruzana/Materias/Estancia/Clean_dataset/target_renames"
+from numba import cuda
+cuda.select_device(0)
+cuda.close()
+
+config = tf.compat.v1.ConfigProto()
+config.gpu_options.allow_growth = True
+sess =tf.compat.v1.Session(config=config)
+
+input_dir = "./spiders/input"
+target_dir = "./spiders/target"
 
 #Hyperparameters
-img_size = (256, 256)
+img_size = (512, 512)
 
-epochs = 100
-batch_size = 64
-val_samples = 900
+epochs = 200
+batch_size = 7
+val_samples = 17
 epoch_patience = 15
-model_learning_rate = 0.005
-validation_split = 0.3
+model_learning_rate = 0.0004
+validation_split = 0.2
+
+input_ext = ".jpg"
+target_ext = ".png"
 
 """
 ## Set aside a validation split
@@ -41,7 +53,7 @@ input_img_paths = sorted(
     [
         os.path.join(input_dir, fname)
         for fname in os.listdir(input_dir)
-        if fname.endswith(".jpeg")
+        if fname.endswith(input_ext)
     ]
 )
 
@@ -49,12 +61,12 @@ target_img_paths = sorted(
     [
         os.path.join(target_dir, fname)
         for fname in os.listdir(target_dir)
-        if fname.endswith(".png")
+        if fname.endswith(target_ext)
     ]
 )
 
 # Define augmentation parameters
-train_datagen = ImageDataGenerator(
+datagen = ImageDataGenerator(
     rotation_range=20,  # randomly rotate images in the range (degrees, 0 to 180)
     width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
     height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
@@ -94,12 +106,12 @@ for input_path, target_path in zip(input_img_paths[:10], target_img_paths[:10]):
 # plt.imshow(img)
 
 def get_dataset(
-    batch_size,
-    img_size,
-    input_img_paths,
-    target_img_paths,
-    max_dataset_len=None,
-):
+     batch_size,
+     img_size,
+     input_img_paths,
+     target_img_paths,
+     max_dataset_len=None,
+ ):
     """Returns a TF Dataset."""
 
 def load_img_masks(input_img_path, target_img_path, val_input_img_path,val_target_img_path):
@@ -202,13 +214,12 @@ def get_model():
 
 [X_train, Y_train, X_test, Y_test] = load_img_masks(train_input_img_paths,train_target_img_paths,val_input_img_paths,val_target_img_paths)
 
-train_generator = train_datagen.flow(X_train, Y_train, batch_size=batch_size)
+train_generator = datagen.flow(X_train, Y_train, batch_size=batch_size)
 
 mmodel = get_model()
 model = Model(inputs=[mmodel[0]], outputs=[mmodel[1]])
-custom_metrics_order = [ 'accuracy']
 
-model.compile(optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=model_learning_rate), loss='binary_crossentropy', metrics=custom_metrics_order)
+model.compile(optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=model_learning_rate), loss='binary_crossentropy', metrics=['accuracy'])
 model.summary()
 
 """
@@ -222,19 +233,14 @@ callbacks = [
 # Train the model, doing validation at the end of each epoch.
 filepath = "model.h5"
 
-earlystopper = EarlyStopping(patience=epoch_patience, verbose=1)
+earlystopper = EarlyStopping(patience=epoch_patience, monitor='val_loss', verbose=1)
 
 checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, 
                              save_best_only=True, mode='min')
 
 callbacks_list = [earlystopper, checkpoint]
 
-history = model.fit(X_train, Y_train, validation_split=validation_split, batch_size=batch_size, epochs=epochs, 
-                    callbacks=callbacks_list)
-
-# history = model.fit(X_train, Y_train, validation_split=validation_split, batch_size=batch_size, epochs=epochs)
-
-# history = model.fit(train_generator, validation_data=(X_test, Y_test), epochs=epochs, callbacks=callbacks_list)
+history = model.fit(X_train,Y_train,validation_split = validation_split, epochs=epochs, callbacks=callbacks_list)
 
 """
 ## Visualize predictions
@@ -266,7 +272,7 @@ columns = 2
 
 # Display results for validation image #0
 
-i = 200
+i = 0
 
 # Display input image
 #display(Image(filename=val_input_img_paths[i]))
@@ -302,7 +308,7 @@ val_preds = model.predict(X_test)
 # Display mask predicted by our model
 display_mask(i)  # Note that the model only sees inputs at 150x150.
 
-model.save('./sperms_v5.keras')  # The file needs to end with the .keras extension
+model.save('./spiders_v2.keras')  # The file needs to end with the .keras extension
 
 fig.add_subplot(rows, columns, 4) 
 plt.plot(history.history['accuracy'], label='train') 
