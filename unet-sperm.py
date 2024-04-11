@@ -36,10 +36,10 @@ target_dir = "./spiders/target"
 img_size = (512, 512)
 
 epochs = 200
-batch_size = 7
-val_samples = 17
+batch_size = 6
+val_samples = 16
 epoch_patience = 15
-model_learning_rate = 0.0004
+model_learning_rate = 0.0008
 validation_split = 0.2
 
 input_ext = ".jpg"
@@ -308,7 +308,7 @@ val_preds = model.predict(X_test)
 # Display mask predicted by our model
 display_mask(i)  # Note that the model only sees inputs at 150x150.
 
-model.save('./spiders_v2.keras')  # The file needs to end with the .keras extension
+model.save('./spiders_v3.keras')  # The file needs to end with the .keras extension
 
 fig.add_subplot(rows, columns, 4) 
 plt.plot(history.history['accuracy'], label='train') 
