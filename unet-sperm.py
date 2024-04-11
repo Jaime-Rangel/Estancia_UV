@@ -21,19 +21,19 @@ from skimage.transform import resize
 import random
 import tensorflow as tf
 
-from numba import cuda
-cuda.select_device(0)
-cuda.close()
+# from numba import cuda
+# cuda.select_device(0)
+# cuda.close()
 
-config = tf.compat.v1.ConfigProto()
-config.gpu_options.allow_growth = True
-sess =tf.compat.v1.Session(config=config)
+# config = tf.compat.v1.ConfigProto()
+# config.gpu_options.allow_growth = True
+# sess =tf.compat.v1.Session(config=config)
 
 input_dir = "./spiders/input"
 target_dir = "./spiders/target"
 
 #Hyperparameters
-img_size = (512, 512)
+img_size = (1024, 1024)
 
 epochs = 200
 batch_size = 6

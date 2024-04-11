@@ -1,0 +1,12 @@
+Follow this 
+
+https://www.youtube.com/watch?v=NrJz3ACosJA
+
+Whit this:
+
+https://stackoverflow.com/questions/52410484/get-the-cuda-and-cudnn-version-on-windows-with-anaconda-installe
+
+and this:
+
+https://github.com/deepfakes/faceswap/issues/1320#issuecomment-1621789816
+

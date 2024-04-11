@@ -9,10 +9,10 @@ import os
 
 final_dir = "mask"
 input_dir = "spider_new"
-img_size = (512, 512)
+img_size = (1024, 1024)
 
 # trained_model = keras.saving.load_model("./betamodel_v4.keras", custom_objects=None, compile=True, safe_mode=False)
-trained_model = load_model("./spiders_v2.keras", custom_objects=None, compile=True)
+trained_model = load_model("./spiders_v3.keras", custom_objects=None, compile=True,safe_mode=False)
 
 input_img_paths = sorted(
     [
