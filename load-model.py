@@ -12,13 +12,13 @@ input_dir = "spider_new"
 img_size = (1024, 1024)
 
 # trained_model = keras.saving.load_model("./betamodel_v4.keras", custom_objects=None, compile=True, safe_mode=False)
-trained_model = load_model("./spiders_cpu4.keras", custom_objects=None, compile=True,safe_mode=False)
+trained_model = load_model("./spiders_cpu5.keras", custom_objects=None, compile=True,safe_mode=False)
 
 input_img_paths = sorted(
     [
         os.path.join(input_dir, fname)
         for fname in os.listdir(input_dir)
-        if fname.endswith(".JPG")
+        if fname.endswith(".jpg")
     ]
 )
 val_input_img_paths = input_img_paths[:]

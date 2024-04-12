@@ -18,10 +18,10 @@ if not os.path.exists(path):
 else:
   print("Folder %s already exists" % path)
 
-onlyfiles = [f for f in listdir(localpath) if f.endswith(".jpg")]
+onlyfiles = [f for f in listdir(localpath) if f.endswith(".JPG")]
 images = numpy.empty(len(onlyfiles), dtype=object)
 
 for n in range(0, len(onlyfiles)):
     filename = onlyfiles[n].split('.', 1)
     img = Image.open(join(localpath,onlyfiles[n]) )
-    img.save(str(join(savedir, filename[0] + ".JPG")),subsampling=0, quality=100)
+    img.save(str(join(savedir, filename[0] + ".jpg")),subsampling=0, quality=100)
