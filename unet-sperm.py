@@ -39,7 +39,7 @@ epochs = 200
 batch_size = 3
 val_samples = 25
 epoch_patience = 25
-model_learning_rate = 0.00135
+model_learning_rate = 0.00165
 validation_split = 0.3
 
 input_ext = ".jpg"
@@ -254,7 +254,7 @@ valid_dataset = get_dataset(
 
 def display_mask(i):
     """Quick utility to display a model's binary prediction mask."""
-    preds_test_thresh = (val_preds >= 0.5).astype(np.uint8)
+    preds_test_thresh = (val_preds >= 0.50).astype(np.uint8)
     test_img = preds_test_thresh[i, :, :, 0]
 
     # Adds a subplot at the 3rd position 
@@ -308,7 +308,7 @@ val_preds = model.predict(X_test)
 # Display mask predicted by our model
 display_mask(i)  # Note that the model only sees inputs at 150x150.
 
-model.save('./spiders_cpu6.keras')  # The file needs to end with the .keras extension
+model.save('./spiders_cpu7.keras')  # The file needs to end with the .keras extension
 
 fig.add_subplot(rows, columns, 4) 
 plt.plot(history.history['accuracy'], label='train') 

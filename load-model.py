@@ -12,7 +12,7 @@ input_dir = "spider_new"
 img_size = (1024, 1024)
 
 # trained_model = keras.saving.load_model("./betamodel_v4.keras", custom_objects=None, compile=True, safe_mode=False)
-trained_model = load_model("./spiders_cpu6.keras", custom_objects=None, compile=True,safe_mode=False)
+trained_model = load_model("./spiders_cpu7.keras", custom_objects=None, compile=True,safe_mode=False)
 
 input_img_paths = sorted(
     [
@@ -38,7 +38,7 @@ def load_img(test_img_path):
     return X_test
 
 def save_mask():
-    preds_test_thresh = (val_preds >= 0.5).astype(np.uint8)
+    preds_test_thresh = (val_preds >= 0.50).astype(np.uint8)
 
     for i in range(len(X_test)):
         print("Store img: " + str(i + 1))
@@ -47,7 +47,7 @@ def save_mask():
 
 def display_mask(i):
     """Quick utility to display a model's binary prediction mask."""
-    preds_test_thresh = (val_preds >= 0.5).astype(np.uint8)
+    preds_test_thresh = (val_preds >= 0.50).astype(np.uint8)
 
     test_img = preds_test_thresh[i, :, :, 0]
 
