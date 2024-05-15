@@ -12,13 +12,13 @@ input_dir = "spider_new"
 img_size = (1024, 1024)
 
 # trained_model = keras.saving.load_model("./betamodel_v4.keras", custom_objects=None, compile=True, safe_mode=False)
-trained_model = load_model("./spiders_cpu7.keras", custom_objects=None, compile=True,safe_mode=False)
+trained_model = load_model("/Users/jaime/Dropbox/Universidad Veracruzana/Materias/Estancia/Estancia_UV/Tesis Modelos/Niblack/v2/cpu_spiders_niblack_v2.keras", custom_objects=None, compile=True,safe_mode=False)
 
 input_img_paths = sorted(
     [
         os.path.join(input_dir, fname)
         for fname in os.listdir(input_dir)
-        if fname.endswith(".jpg")
+        if fname.endswith(".JPG")
     ]
 )
 val_input_img_paths = input_img_paths[:]
@@ -40,9 +40,15 @@ def load_img(test_img_path):
 def save_mask():
     preds_test_thresh = (val_preds >= 0.50).astype(np.uint8)
 
-    for i in range(len(X_test)):
-        print("Store img: " + str(i + 1))
-        plt.imsave(input_dir + "/"+ final_dir + "/" + 'mask_' + str(i) + ".png",preds_test_thresh[i, :, :, 0] , cmap="gray")
+    for i, path in enumerate(val_input_img_paths):
+        filename = os.path.basename(path)  # Extrae el nombre del archivo de la ruta completa
+        mask_filename = 'mask_' + filename  # Crea un nuevo nombre de archivo
+        plt.imsave(os.path.join(input_dir, final_dir, mask_filename), preds_test_thresh[i, :, :, 0], cmap="gray")
+        print("Mask saved: " + mask_filename)
+
+    # for i in range(len(X_test)):
+    #     print("Store img: " + str(i + 1))
+    #     plt.imsave(input_dir + "/"+ final_dir + "/" + 'mask_' + str(i) + ".png",preds_test_thresh[i, :, :, 0] , cmap="gray")
 
 
 def display_mask(i):
@@ -76,7 +82,7 @@ fig = plt.figure(figsize=(10, 7))
 fig.add_subplot(rows, columns, 1) 
 
 # showing image 
-plt.imshow(X_test[i, :, :, 0]) 
+plt.imshow(X_test[i, :, :, 0],cmap='gray') 
 plt.axis('off') 
 plt.title("Original")
 

@@ -1,0 +1,158 @@
+% Lee la imagen
+img_name = "13-03-AL-SA-antes";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [9 9], [11 11], -0.5, -0.5, -1.5, 0, 1);
+
+
+% Lee la imagen
+img_name = "13-03-IL-CA-antes";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [9 9], [11 11], -0.3, -0.5, -1, 0, 1);
+
+
+% Lee la imagen
+img_name = "13-03-IL-SA-antes";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [7 7], [15 15], -0.3, -0.5, -1, 0, 1);
+
+
+% Lee la imagen
+img_name = "17-03-AL-CA-antes";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [7 7], [11 11], -0.4, -0.5, -1, 0, 1);
+
+
+
+% Lee la imagen
+img_name = "17-03-AL-SA-antes";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [7 7], [11 11], -0.4, -0.5, -1, 0, 1);
+
+
+
+% Lee la imagen
+img_name = "17-03-IL-CA-antes";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [7 7], [11 11], -0.3, -0.8, -1, 0, 1);
+
+
+% Lee la imagen
+img_name = "17-03-S-CA-antes";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [7 7], [11 11], -0.5, -0.5, -1, 0, 1);
+
+
+% Lee la imagen
+img_name = "17-03-S-SA-antes";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [5 5], [13 13], -0.3, -0.4, -1, 0, 1);
+
+
+% Lee la imagen
+img_name = "18-02-AL-CA-antes";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [5 5], [13 13], -0.3, -0.4, -1, 0, 1);
+
+
+% Lee la imagen
+img_name = "18-02-AL-SA-antes";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [7 7], [13 13], -0.3, -0.5, -1, 0, 1);
+
+
+
+% Lee la imagen
+img_name = "18-02-IL-CA-antes";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [7 7], [13 13], -0.3, -0.5, -1, 0, 1);
+
+
+
+% Lee la imagen
+img_name = "18-02-IL-SA-antes";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [7 7], [13 13], -0.5, -0.4, -1, 0, 1);
+
+
+% Lee la imagen
+img_name = "18-02-S-SA-antes";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [7 7], [13 13], -0.5, -0.4, -1, 0, 1);
+
+
+
+% Lee la imagen
+img_name = "20-02-AL-SA-antes";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [5 5], [13 13], -0.4, -0.5, -1.2, 0, 1);
+
+
+
+% Lee la imagen
+img_name = "20-02-IL-CA-antes";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [7 7], [15 15], -0.4, -0.3, -1, 0, 1);
+
+
+% Lee la imagen
+img_name = "20-02-IL-SA-antes";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [7 7], [11 11], -0.4, -0.5, -1.2, 0, 1);
+
+
+
+% Lee la imagen
+img_name = "20-02-S-SA-antes";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [7 7], [11 11], -0.3, -0.5, -1.2, 0, 1);

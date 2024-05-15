@@ -1,0 +1,222 @@
+% Lee la imagen
+img_name = "13-03-AL-SA-despues";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [11 11], [13 13], -0.2, -0.2, -0.6, 0, 1);
+
+mean = medfilt2(feng_img,[5 5]);
+
+% Lee la imagen
+img_name = "13-03-IL-CA-despues";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [9 9], [13 13], -0.2, -0.3, -0.5, 0, 1);
+
+mean = medfilt2(feng_img,[3 3]);
+
+
+% Lee la imagen
+img_name = "13-03-S-CA-despues";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [7 7], [11 11], -0.2, -0.3, -0.6, 0, 1);
+mean = medfilt2(feng_img,[5 5]);
+
+% Lee la imagen
+img_name = "13-03-IL-SA-despues";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [7 7], [11 11], -0.2, -0.3, -0.4, 0, 1);
+
+mean = medfilt2(feng_img,[3 3]);
+
+
+% Lee la imagen
+img_name = "13-03-S-CA-despues";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [7 7], [11 11], -0.1, -0.1, -0.3, 0, 1);
+
+mean = medfilt2(feng_img,[5 5]);
+
+
+% Lee la imagen
+img_name = "17-03-AL-CA-despues";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [9 9], [11 11], -0.3, -0.3, -0.3, 0, 1);
+mean = medfilt2(feng_img,[3 3]);
+
+% Lee la imagen
+img_name = "17-03-AL-SA-despues";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [9 9], [11 11], -0.2, -0.3, -0.5, 0, 1);
+
+mean = medfilt2(feng_img,[3 3]);
+
+
+% Lee la imagen
+img_name = "17-03-IL_SA-despues";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [9 9], [13 13], -0.2, -0.3, -0.3, 0, 1);
+
+mean = medfilt2(feng_img,[5 5]);
+
+
+% Lee la imagen
+img_name = "17-03-IL-CA-despues";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [7 7], [13 13], -0.3, -0.6, -0.5, 0, 1);
+mean = medfilt2(feng_img,[3 3]);
+
+% Lee la imagen
+img_name = "17-03-S-CA-despues";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [9 9], [13 13], -0.2, -0.1, -0.5, 0, 1);
+
+mean = medfilt2(feng_img,[5 5]);
+
+
+% Lee la imagen
+img_name = "17-03-S-SA-despues";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [9 9], [13 13], -0.2, -0.1, -0.4, 0, 1);
+
+mean = medfilt2(feng_img,[5 5]);
+
+
+% Lee la imagen
+img_name = "18-02-AL-CA-despues";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [9 9], [13 13], -0.2, -0.2, -0.3, 0, 1);
+
+mean = medfilt2(feng_img,[3 3]);
+
+% Lee la imagen
+img_name = "18-02-AL-SA-despues";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [9 9], [13 13], -0.2, -0.1, -0.4, 0, 1);
+
+mean = medfilt2(feng_img,[3 3]);
+
+
+% Lee la imagen
+img_name = "18-02-IL-CA-despues";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [9 9], [13 13], -0.2, -0.1, -0.5, 0, 1);
+
+mean = medfilt2(feng_img,[3 3]);
+
+
+% Lee la imagen
+img_name = "18-02-S-CA-antes";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [9 9], [11 11], -0.2, -0.1, -0.6, 0, 1);
+
+mean = medfilt2(feng_img,[3 3]);
+
+
+% Lee la imagen
+img_name = "18-02-S-CA-despues";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [9 9], [11 11], -0.2, -0.2, -0.5, 0, 1);
+
+mean = medfilt2(feng_img,[3 3]);
+
+
+% Lee la imagen
+img_name = "18-02-S-SA-despues";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [7 7], [11 11], -0.3, -0.1, -0.5, 0, 1);
+
+mean = medfilt2(feng_img,[3 3]);
+
+
+% Lee la imagen
+img_name = "20-02-AL-SA-despues";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [7 7], [11 11], -0.3, -0.1, -0.7, 0, 1);
+
+mean = medfilt2(feng_img,[3 3]);
+
+
+% Lee la imagen
+img_name = "20-02-IL-CA-despues";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [7 7], [11 11], -0.2, -0.1, -0.5, 0, 1);
+
+mean = medfilt2(feng_img,[3 3]);
+
+
+% Lee la imagen
+img_name = "20-02-IL-SA-despues";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [7 7], [11 11], -0.2, -0.2, -0.5, 0, 1);
+
+mean = medfilt2(feng_img,[3 3]);
+
+
+
+% Lee la imagen
+img_name = "20-02-S-SA-despues";
+imagen = imread(directorio + img_name + type);
+
+I2 = im2gray(imagen);
+
+feng_img = feng(I2, [7 7], [11 11], -0.2, -0.1, -0.5, 0, 1);
+
+mean = medfilt2(feng_img,[3 3]);

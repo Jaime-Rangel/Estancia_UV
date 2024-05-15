@@ -1,0 +1,206 @@
+
+% Lee la imagen
+img_name = "13-03-AL-CA-antes";
+imagen = imread(directorio + img_name + ".jpg");
+
+I2 = im2gray(imagen);
+
+nk_img = niblack(I2, [11 11], -1, -5, 1);
+mean = medfilt2(nk_img);
+
+
+% Lee la imagen
+img_name = "13-03-AL-SA-antes";
+imagen = imread(directorio + img_name + ".jpg");
+
+I2 = im2gray(imagen);
+
+nk_img = niblack(I2, [5 5], -4, -25, 1);
+mean = medfilt2(nk_img);
+
+
+% Lee la imagen
+img_name = "13-03-IL-CA-antes";
+imagen = imread(directorio + img_name + ".jpg");
+
+I2 = im2gray(imagen);
+
+nk_img = niblack(I2, [7 7], -2, -10, 1);
+mean = medfilt2(nk_img);
+
+
+
+% Lee la imagen
+img_name = "13-03-IL-SA-antes";
+imagen = imread(directorio + img_name + ".jpg");
+
+I2 = im2gray(imagen);
+
+nk_img = niblack(I2, [7 7], -1, -12, 1);
+mean = medfilt2(nk_img);
+
+
+
+% Lee la imagen
+img_name = "13-03-S-CA-antes";
+imagen = imread(directorio + img_name + ".jpg");
+
+I2 = im2gray(imagen);
+
+nk_img = niblack(I2, [9 9], -1, -10, 1);
+mean = medfilt2(nk_img);
+
+
+
+
+% Lee la imagen
+img_name = "17-03-AL-CA-antes";
+imagen = imread(directorio + img_name + ".jpg");
+
+I2 = im2gray(imagen);
+
+nk_img = niblack(I2, [5 5], -1, -10, 1);
+mean = medfilt2(nk_img);
+
+
+
+% Lee la imagen
+img_name = "17-03-AL-SA-antes";
+imagen = imread(directorio + img_name + ".jpg");
+
+I2 = im2gray(imagen);
+
+nk_img = niblack(I2, [7 7], -1, -10, 1);
+mean = medfilt2(nk_img);
+
+
+
+% Lee la imagen
+img_name = "17-03-IL-CA-antes";
+imagen = imread(directorio + img_name + ".jpg");
+
+I2 = im2gray(imagen);
+
+nk_img = niblack(I2, [7 7], -1, -10, 1);
+mean = medfilt2(nk_img);
+
+
+
+% Lee la imagen
+img_name = "17-03-S-CA-antes";
+imagen = imread(directorio + img_name + ".jpg");
+
+I2 = im2gray(imagen);
+
+nk_img = niblack(I2, [7 7], -1, -10, 1);
+mean = medfilt2(nk_img);
+
+
+
+% Lee la imagen
+img_name = "17-03-S-SA-antes";
+imagen = imread(directorio + img_name + ".jpg");
+
+I2 = im2gray(imagen);
+
+nk_img = niblack(I2, [7 7], -2, -10, 1);
+mean = medfilt2(nk_img);
+
+
+
+% Lee la imagen
+img_name = "18-02-AL-CA-antes";
+imagen = imread(directorio + img_name + ".jpg");
+
+I2 = im2gray(imagen);
+
+nk_img = niblack(I2, [7 7], -1, -10, 1);
+mean = medfilt2(nk_img);
+
+
+
+% Lee la imagen
+img_name = "18-02-AL-SA-antes";
+imagen = imread(directorio + img_name + ".jpg");
+
+I2 = im2gray(imagen);
+
+nk_img = niblack(I2, [7 7], -3, -14, 1);
+mean = medfilt2(nk_img);
+
+
+
+% Lee la imagen
+img_name = "18-02-IL-CA-antes";
+imagen = imread(directorio + img_name + ".jpg");
+
+I2 = im2gray(imagen);
+
+nk_img = niblack(I2, [5 5], -2, -12, 1);
+mean = medfilt2(nk_img);
+
+
+
+
+% Lee la imagen
+img_name = "18-02-IL-SA-antes";
+imagen = imread(directorio + img_name + ".jpg");
+
+I2 = im2gray(imagen);
+
+nk_img = niblack(I2, [5 5], -1, -10, 1);
+mean = medfilt2(nk_img);
+
+
+
+% Lee la imagen
+img_name = "18-02-S-SA-antes";
+imagen = imread(directorio + img_name + ".jpg");
+
+I2 = im2gray(imagen);
+
+nk_img = niblack(I2, [5 5], -1, -12, 1);
+mean = medfilt2(nk_img);
+
+
+% Lee la imagen
+img_name = "20-02-AL-SA-antes";
+imagen = imread(directorio + img_name + ".jpg");
+
+I2 = im2gray(imagen);
+
+nk_img = niblack(I2, [5 5], -2, -7, 1);
+mean = medfilt2(nk_img);
+
+
+
+% Lee la imagen
+img_name = "20-02-IL-CA-antes";
+imagen = imread(directorio + img_name + ".jpg");
+
+I2 = im2gray(imagen);
+
+nk_img = niblack(I2, [5 5], -1, -8, 1);
+mean = medfilt2(nk_img);
+
+
+
+% Lee la imagen
+img_name = "20-02-IL-SA-antes";
+imagen = imread(directorio + img_name + ".jpg");
+
+I2 = im2gray(imagen);
+
+nk_img = niblack(I2, [5 5], -1, -8, 1);
+mean = medfilt2(nk_img);
+
+
+
+% Lee la imagen
+img_name = "20-02-S-SA-antes";
+imagen = imread(directorio + img_name + ".jpg");
+
+I2 = im2gray(imagen);
+
+nk_img = niblack(I2, [5 5], -1, -8, 1);
+mean = medfilt2(nk_img);

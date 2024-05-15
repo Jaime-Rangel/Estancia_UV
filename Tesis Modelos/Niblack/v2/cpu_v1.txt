@@ -1,0 +1,9 @@
+#Hyperparameters
+img_size = (1024, 1024)
+
+epochs = 200
+batch_size = 5
+val_samples = 25
+epoch_patience = 25
+model_learning_rate = 0.00135
+validation_split = 0.3

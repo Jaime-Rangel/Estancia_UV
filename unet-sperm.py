@@ -29,20 +29,20 @@ import tensorflow as tf
 # config.gpu_options.allow_growth = True
 # sess =tf.compat.v1.Session(config=config)
 
-input_dir = "./spiders/input"
-target_dir = "./spiders/target"
+input_dir = "./spiders/v2/input"
+target_dir = "./spiders/v2/target"
 
 #Hyperparameters
 img_size = (1024, 1024)
 
 epochs = 200
-batch_size = 3
+batch_size = 5
 val_samples = 25
 epoch_patience = 25
-model_learning_rate = 0.00165
+model_learning_rate = 0.00135
 validation_split = 0.3
 
-input_ext = ".jpg"
+input_ext = ".JPG"
 target_ext = ".png"
 
 """
@@ -287,7 +287,7 @@ fig = plt.figure(figsize=(10, 7))
 fig.add_subplot(rows, columns, 1) 
   
 # showing image 
-plt.imshow(X_test[i, :, :, 0]) 
+plt.imshow(X_test[i, :, :, 0],cmap='gray') 
 plt.axis('off') 
 plt.title("Original") 
 
@@ -308,16 +308,20 @@ val_preds = model.predict(X_test)
 # Display mask predicted by our model
 display_mask(i)  # Note that the model only sees inputs at 150x150.
 
-model.save('./spiders_cpu7.keras')  # The file needs to end with the .keras extension
+model.save('./cpu_spiders_niblack_v2.keras')  # The file needs to end with the .keras extension
 
 fig.add_subplot(rows, columns, 4) 
 plt.plot(history.history['accuracy'], label='train') 
-plt.plot(history.history['val_accuracy'], label='test') 
+plt.plot(history.history['val_accuracy'], label='test')
+plt.ylabel('Accuracy') 
+plt.xlabel('Epoch')  
 plt.legend() 
 
 fig.add_subplot(rows, columns, 5) 
 plt.plot(history.history['loss'], label='train loss') 
 plt.plot(history.history['val_loss'], label='validation loss') 
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch') 
 
 plt.legend() 
 plt.show()
